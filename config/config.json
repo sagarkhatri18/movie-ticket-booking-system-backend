@@ -1,0 +1,12 @@
+{
+    "development": {
+        "username": "user",
+        "password": "Sanima@123",
+        "database": "enadoc_centralized",
+        "host": "localhost",
+        "dialect": "mssql",
+        "define": {"timestamps": true},
+        "timezone": "+05:45"
+    }
+
+}
