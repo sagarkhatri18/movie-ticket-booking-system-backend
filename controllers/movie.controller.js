@@ -30,6 +30,7 @@ exports.addNewMovie = async (req, res) => {
     star_casts: reqParam.star_casts,
     play_time: reqParam.play_time,
     release_year: reqParam.release_year,
+    theatre_id: reqParam.theatre_id,
   })
     .then((data) => {
       res

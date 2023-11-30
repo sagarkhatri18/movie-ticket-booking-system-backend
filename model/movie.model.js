@@ -56,6 +56,10 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    theatre_id: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
