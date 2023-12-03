@@ -39,12 +39,12 @@ exports.addNewTheatre = async (req, res) => {
     });
 };
 
-// find theatre from slug
-exports.getTheatreFromSlug = async (req, res) => {
-  const slug = req.params.slug;
+// find theatre from id
+exports.getTheatreFromId = async (req, res) => {
+  const _id = req.params.id;
 
   try {
-    const theatre = await Theatre.findOne({ slug });
+    const theatre = await Theatre.findOne({ _id });
     if (!theatre) {
       return res.status(400).json({
         success: false,
@@ -67,18 +67,18 @@ exports.getTheatreFromSlug = async (req, res) => {
 
 // delete theatre from slug
 exports.deleteTheatre = async (req, res) => {
-  const slug = req.params.slug;
+  const id = req.params.id;
 
   try {
-    await Theatre.findOneAndDelete({ slug: slug }).exec();
+    await Theatre.deleteOne({ _id: id });
     return res.status(200).json({
       success: true,
       message: "Theatre has been successfully deleted",
     });
-  } catch (error) {
-    res.status(500).send({
+  } catch {
+    return res.status(500).json({
       success: false,
-      message: "Something went Wrong",
+      message: "Failed to delete the selected theatre",
     });
   }
 };
