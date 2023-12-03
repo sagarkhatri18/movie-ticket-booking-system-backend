@@ -45,12 +45,12 @@ exports.addNewMovie = async (req, res) => {
     });
 };
 
-// find movie from slug
-exports.getMovieFromSlug = async (req, res) => {
-  const slug = req.params.slug;
+// find movie from id
+exports.getMovieFromId = async (req, res) => {
+  const _id = req.params.id;
 
   try {
-    const movie = await Movie.findOne({ slug });
+    const movie = await Movie.findOne({ _id });
     if (!movie) {
       return res.status(400).json({
         success: false,
@@ -71,30 +71,20 @@ exports.getMovieFromSlug = async (req, res) => {
   }
 };
 
-// delete movie from slug
+// delete movie from id
 exports.deleteMovie = async (req, res) => {
-  const slug = req.params.slug;
+  const id = req.params.id;
 
   try {
-    await Movie.findOneAndDelete({ slug: slug })
-      .exec()
-      .then((movie) => {
-        return res.status(200).json({
-          success: true,
-          message: "Movie has been successfully deleted",
-          data: movie,
-        });
-      })
-      .catch((err) => {
-        res.status(500).send({
-          success: false,
-          message: "Something went Wrong",
-        });
-      });
-  } catch (error) {
-    res.status(500).send({
+    await Movie.deleteOne({ _id: id });
+    return res.status(200).json({
+      success: true,
+      message: "Movie has been successfully deleted",
+    });
+  } catch {
+    return res.status(500).json({
       success: false,
-      message: "Something went Wrong",
+      message: "Failed to delete the selected movie",
     });
   }
 };
