@@ -6,6 +6,7 @@ const userRoute = require('./routes/user.route')
 const accountRoute = require('./routes/account.route')
 const movieRoute = require('./routes/movie.route')
 const theatreRoute = require('./routes/theatre.route')
+const bookingRoute = require('./routes/booking.route')
 const connectDB = require('./services/db.connection');
 const { authenticateToken } = require("./services/helper");
 
@@ -36,6 +37,7 @@ app.use('/api/', accountRoute)
 app.use('/api/user/', authenticateToken, userRoute)
 app.use('/api/movie/', authenticateToken, movieRoute)
 app.use('/api/theatre/', authenticateToken, theatreRoute)
+app.use('/api/booking/', authenticateToken, bookingRoute)
 
 app.listen(10000, () => {
     console.log("Started application on port %d", 10000)
