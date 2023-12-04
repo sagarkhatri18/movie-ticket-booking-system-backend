@@ -4,7 +4,7 @@ const { slugify } = require("../services/helper");
 // list all the movies
 exports.index = async (req, res) => {
   try {
-    const movies = await Movie.find({});
+    const movies = await Movie.find({}).populate('theatre_id');
     res.status(200).json(movies);
   } catch (error) {
     res.status(500).send({
@@ -38,7 +38,6 @@ exports.addNewMovie = async (req, res) => {
         .send({ message: "Movie has been successfully added", success: true });
     })
     .catch((error) => {
-      console.log(error);
       res
         .status(400)
         .send({ message: "Failed to add the movie", success: false });
@@ -125,6 +124,36 @@ exports.updateMovie = async (req, res) => {
           message: "Failed to update the selected movie",
         });
       });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went Wrong",
+    });
+  }
+};
+
+// find movie from LIKE title
+exports.searchMovieFromTitle = async (req, res) => {
+  try {
+    const colName = req.params.title;
+
+    const searchMovies = await Movie.find({
+      slug: { $regex: ".*" + colName + ".*" },
+    }).populate('theatre_id');
+    let foundMoviesLength = searchMovies.length;
+    if (foundMoviesLength > 0) {
+      res.status(200).json({
+        message: "Movies found successfully",
+        data: searchMovies,
+        length: foundMoviesLength,
+      });
+    } else {
+      res.status(200).json({
+        message: "Sorry, no any movie found",
+        data: [],
+        length: foundMoviesLength,
+      });
+    }
   } catch (error) {
     res.status(500).send({
       success: false,

@@ -6,5 +6,6 @@ router.post('/', movieController.addNewMovie)
 router.get('/:id', movieController.getMovieFromId)
 router.delete('/:id', movieController.deleteMovie)
 router.put('/:id', movieController.updateMovie)
+router.get('/search/:title', movieController.searchMovieFromTitle)
 
 module.exports = router

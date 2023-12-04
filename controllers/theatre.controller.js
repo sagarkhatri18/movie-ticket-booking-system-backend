@@ -14,6 +14,19 @@ exports.index = async (req, res) => {
   }
 };
 
+// list only active theatres
+exports.activeTheatres = async (req, res) => {
+  try {
+    const theatres = await Theatre.find({status: true});
+    res.status(200).json(theatres);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went Wrong",
+    });
+  }
+};
+
 // add new theatre data
 exports.addNewTheatre = async (req, res) => {
   const reqParam = req.body;
