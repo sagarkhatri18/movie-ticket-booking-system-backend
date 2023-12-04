@@ -49,7 +49,7 @@ exports.getMovieFromId = async (req, res) => {
   const _id = req.params.id;
 
   try {
-    const movie = await Movie.findOne({ _id });
+    const movie = await Movie.findOne({ _id }).populate('theatre_id');
     if (!movie) {
       return res.status(400).json({
         success: false,
