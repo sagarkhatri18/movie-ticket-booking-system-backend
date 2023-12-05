@@ -4,7 +4,7 @@ const { slugify } = require("../services/helper");
 // list all the movies
 exports.index = async (req, res) => {
   try {
-    const movies = await Movie.find({}).populate('theatre_id');
+    const movies = await Movie.find({}).populate("theatre_id");
     res.status(200).json(movies);
   } catch (error) {
     res.status(500).send({
@@ -49,7 +49,7 @@ exports.getMovieFromId = async (req, res) => {
   const _id = req.params.id;
 
   try {
-    const movie = await Movie.findOne({ _id }).populate('theatre_id');
+    const movie = await Movie.findOne({ _id }).populate("theatre_id");
     if (!movie) {
       return res.status(400).json({
         success: false,
@@ -106,6 +106,7 @@ exports.updateMovie = async (req, res) => {
     star_casts: reqParam.star_casts,
     play_time: reqParam.play_time,
     release_year: reqParam.release_year,
+    theatre_id: reqParam.theatre_id,
   };
 
   try {
@@ -139,7 +140,8 @@ exports.searchMovieFromTitle = async (req, res) => {
 
     const searchMovies = await Movie.find({
       slug: { $regex: ".*" + colName + ".*" },
-    }).populate('theatre_id');
+      status: true,
+    }).populate("theatre_id");
     let foundMoviesLength = searchMovies.length;
     if (foundMoviesLength > 0) {
       res.status(200).json({

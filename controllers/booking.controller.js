@@ -3,7 +3,10 @@ const Booking = require("../model/booking.model");
 // list all the booking
 exports.index = async (req, res) => {
   try {
-    const bookings = await Booking.find({}).populate("movie_id");
+    const bookings = await Booking.find({}).populate({
+      path: "movie_id",
+      populate: { path: "theatre_id" },
+    });
     res.status(200).json(bookings);
   } catch (error) {
     res.status(500).send({
@@ -18,6 +21,7 @@ exports.addNewBooking = async (req, res) => {
   const reqParam = req.body;
   await Booking.create({
     name: reqParam.name,
+    status: reqParam.status,
     email: reqParam.email,
     contact: reqParam.contact,
     booking_date: reqParam.booking_date,
@@ -38,4 +42,31 @@ exports.addNewBooking = async (req, res) => {
         .status(400)
         .json({ message: "Failed to made the booking", success: false });
     });
+};
+
+// make status inactive
+exports.markAsInactive = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    await Booking.findOneAndUpdate({ _id: _id }, { status: false })
+      .exec()
+      .then((booking) => {
+        return res.status(200).json({
+          success: true,
+          message: "Booking has been succesfully cancelled",
+          data: booking,
+        });
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to cancel the selected booking",
+        });
+      });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went Wrong",
+    });
+  }
 };
