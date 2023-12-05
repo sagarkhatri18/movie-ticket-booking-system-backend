@@ -21,7 +21,7 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     booking_date: {
-      type: Date,
+      type: String,
       required: true,
     },
     quantity: {

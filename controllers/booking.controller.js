@@ -70,3 +70,30 @@ exports.markAsInactive = async (req, res) => {
     });
   }
 };
+
+// get booked seats from date and movie_id
+exports.getBookedSeats = async (req, res) => {
+  const reqParam = req.body;
+  let bookedDate = reqParam.booking_date;
+  let movieId = reqParam.movie_id;
+
+  try {
+    const bookings = await Booking.find({movie_id: movieId, booking_date: bookedDate}).select('selected_seats');
+    let seatsArray = [];
+    (bookings).map(data => {
+      seatsArray = seatsArray.concat(data.selected_seats)
+    })
+
+    seatsArray = seatsArray.map(Number);
+    return res.status(200).json({
+      success: true,
+      message: "Success",
+      data: seatsArray,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went Wrong",
+    });
+  }
+};
