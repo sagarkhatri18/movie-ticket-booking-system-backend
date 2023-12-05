@@ -4,7 +4,24 @@ const { slugify } = require("../services/helper");
 // list all the movies
 exports.index = async (req, res) => {
   try {
-    const movies = await Movie.find({}).populate("theatre_id");
+    const movies = await Movie.find({})
+      .populate("theatre_id")
+      .sort({ created_at: "descending" });
+    res.status(200).json(movies);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went Wrong",
+    });
+  }
+};
+
+// list only active movies
+exports.activeMovies = async (req, res) => {
+  try {
+    const movies = await Movie.find({ status: true })
+      .populate("theatre_id")
+      .sort({ created_at: "descending" });
     res.status(200).json(movies);
   } catch (error) {
     res.status(500).send({

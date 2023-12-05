@@ -3,11 +3,42 @@ const Booking = require("../model/booking.model");
 // list all the booking
 exports.index = async (req, res) => {
   try {
-    const bookings = await Booking.find({}).populate({
+    const bookings = await Booking.find({})
+      .populate({
+        path: "movie_id",
+        populate: { path: "theatre_id" },
+      })
+      .sort({ created_at: "descending" });
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went Wrong",
+    });
+  }
+};
+
+// find particular booking details
+exports.getBookingFromId = async (req, res) => {
+  const _id = req.params.id;
+
+  try {
+    const booking = await Booking.findOne({ _id }).populate({
       path: "movie_id",
       populate: { path: "theatre_id" },
     });
-    res.status(200).json(bookings);
+    if (!booking) {
+      return res.status(400).json({
+        success: false,
+        message: "Sorry no any booking found",
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "Data found",
+        data: booking,
+      });
+    }
   } catch (error) {
     res.status(500).send({
       success: false,
@@ -78,11 +109,15 @@ exports.getBookedSeats = async (req, res) => {
   let movieId = reqParam.movie_id;
 
   try {
-    const bookings = await Booking.find({movie_id: movieId, booking_date: bookedDate}).select('selected_seats');
+    const bookings = await Booking.find({
+      movie_id: movieId,
+      booking_date: bookedDate,
+      status: true,
+    }).select("selected_seats");
     let seatsArray = [];
-    (bookings).map(data => {
-      seatsArray = seatsArray.concat(data.selected_seats)
-    })
+    bookings.map((data) => {
+      seatsArray = seatsArray.concat(data.selected_seats);
+    });
 
     seatsArray = seatsArray.map(Number);
     return res.status(200).json({
