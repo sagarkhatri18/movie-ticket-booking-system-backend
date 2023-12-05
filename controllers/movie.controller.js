@@ -1,4 +1,5 @@
 const Movie = require("../model/movie.model");
+const Booking = require("../model/booking.model");
 const { slugify } = require("../services/helper");
 
 // list all the movies
@@ -93,6 +94,8 @@ exports.deleteMovie = async (req, res) => {
 
   try {
     await Movie.deleteOne({ _id: id });
+    Booking.deleteMany({ movie_id: id }).exec();
+
     return res.status(200).json({
       success: true,
       message: "Movie has been successfully deleted",
